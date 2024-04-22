@@ -1,0 +1,18 @@
+### 获取所有服务实例
+GET http://localhost:8484/findAll?service=com.bruce.durpc.UserService
+
+### 注册实例
+POST http://localhost:8484/reg?service=com.bruce.durpc.UserService
+content-type: application/json
+
+{
+  "context": "durpc",
+  "host": "127.0.0.1",
+  "port": 8081,
+  "scheme": "http",
+  "status": false,
+  "parameters": {
+    "env": "dev",
+    "tag": "RED"
+  }
+}
