@@ -16,3 +16,19 @@ content-type: application/json
     "tag": "RED"
   }
 }
+
+### 删除实例
+POST http://localhost:8484/unreg?service=com.bruce.durpc.UserService
+content-type: application/json
+
+{
+  "context": "durpc",
+  "host": "127.0.0.1",
+  "port": 8082,
+  "scheme": "http",
+  "status": false,
+  "parameters": {
+    "env": "dev",
+    "tag": "RED"
+  }
+}

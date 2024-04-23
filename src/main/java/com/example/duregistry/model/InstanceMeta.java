@@ -3,8 +3,10 @@ package com.example.duregistry.model;
 import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of={"scheme","host","port","context"})
 public class InstanceMeta {
 
     private String scheme;
@@ -30,6 +33,14 @@ public class InstanceMeta {
         this.host = host;
         this.port = port;
         this.context = context;
+    }
+
+    public static InstanceMeta from(String url) {
+        URI uri = URI.create(url);
+        return new InstanceMeta(uri.getScheme(),
+                uri.getHost(),
+                uri.getPort(),
+                uri.getPath().substring(1));
     }
 
     public String toPath(){

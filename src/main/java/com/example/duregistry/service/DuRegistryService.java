@@ -6,6 +6,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Default implement of RegistryService
@@ -14,7 +17,13 @@ import java.util.List;
 @Slf4j
 public class DuRegistryService implements RegistryService{
 
-    MultiValueMap<String,InstanceMeta> REGISTRY = new LinkedMultiValueMap();
+    final static MultiValueMap<String,InstanceMeta> REGISTRY = new LinkedMultiValueMap();
+
+    final static Map<String, Long> VERSIONS = new ConcurrentHashMap<>();
+
+    public final static Map<String, Long> TIMESTAMPS = new ConcurrentHashMap<>();
+
+    public final static AtomicLong VERSION = new AtomicLong(0);
 
     @Override
     public InstanceMeta register(String service, InstanceMeta instance) {
@@ -29,7 +38,13 @@ public class DuRegistryService implements RegistryService{
         log.info("=====> register instance {}", instance.toUrl());
         REGISTRY.add(service, instance);
         instance.setStatus(true);
+        renew(service, instance);
         return instance;
+    }
+
+    private static void renew(String service, InstanceMeta instance) {
+        TIMESTAMPS.put(service + "@" + instance.toUrl(),System.currentTimeMillis());
+        VERSIONS.put(service,VERSION.incrementAndGet());
     }
 
     @Override
@@ -38,13 +53,13 @@ public class DuRegistryService implements RegistryService{
         if(metas == null || metas.isEmpty()){
             return null;
         }
-        if(metas.contains(instance)){
-            log.info("=====> unregister instance {}", instance.toUrl());
-            REGISTRY.remove(service, instance);
-            instance.setStatus(false);
-            return instance;
-        }
-        return null;
+        metas.removeIf(m -> m.equals(instance));
+
+        log.info("=====> unregister instance {}", instance.toUrl());
+        REGISTRY.remove(service, instance);
+        instance.setStatus(false);
+        renew(service, instance);
+        return instance;
     }
 
     @Override

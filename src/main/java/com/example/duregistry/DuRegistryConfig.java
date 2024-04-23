@@ -1,7 +1,10 @@
 package com.example.duregistry;
 
+import com.example.duregistry.health.DuHealthChecker;
+import com.example.duregistry.health.HealthChecker;
 import com.example.duregistry.service.DuRegistryService;
 import com.example.duregistry.service.RegistryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,4 +21,8 @@ public class DuRegistryConfig {
     }
 
 
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public HealthChecker healthChecker(@Autowired RegistryService registryService) {
+        return new DuHealthChecker(registryService);
+    }
 }
