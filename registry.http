@@ -25,10 +25,31 @@ content-type: application/json
   "context": "durpc",
   "host": "127.0.0.1",
   "port": 8082,
-  "scheme": "http",
-  "status": false,
-  "parameters": {
-    "env": "dev",
-    "tag": "RED"
-  }
+  "scheme": "http"
 }
+
+### 实例8082保活
+POST http://localhost:8484/renew?service=com.bruce.durpc.UserService
+content-type: application/json
+
+{
+  "context": "durpc",
+  "host": "127.0.0.1",
+  "port": 8082,
+  "scheme": "http"
+}
+
+
+### 获取服务实例版本
+GET http://localhost:8484/version?service=com.bruce.durpc.UserService
+
+### info
+GET http://localhost:8484/info
+
+### cluster
+GET http://localhost:8484/cluster
+
+### sl 85
+GET http://localhost:8485/sl
+
+

@@ -1,4 +1,4 @@
-package com.example.duregistry.health;
+package com.bruce.duregistry.health;
 
 /**
  * @date 2024/4/23

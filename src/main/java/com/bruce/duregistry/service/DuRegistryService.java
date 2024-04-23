@@ -1,14 +1,16 @@
-package com.example.duregistry.service;
+package com.bruce.duregistry.service;
 
-import com.example.duregistry.model.InstanceMeta;
+import com.bruce.duregistry.model.InstanceMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * Default implement of RegistryService
@@ -17,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public class DuRegistryService implements RegistryService{
 
-    final static MultiValueMap<String,InstanceMeta> REGISTRY = new LinkedMultiValueMap();
+    final static MultiValueMap<String, InstanceMeta> REGISTRY = new LinkedMultiValueMap();
 
     final static Map<String, Long> VERSIONS = new ConcurrentHashMap<>();
 
@@ -26,7 +28,7 @@ public class DuRegistryService implements RegistryService{
     public final static AtomicLong VERSION = new AtomicLong(0);
 
     @Override
-    public InstanceMeta register(String service, InstanceMeta instance) {
+    public synchronized InstanceMeta register(String service, InstanceMeta instance) {
         List<InstanceMeta> metas = REGISTRY.get(service);
         if(metas != null && !metas.isEmpty()){
             if(metas.contains(instance)){
@@ -38,13 +40,9 @@ public class DuRegistryService implements RegistryService{
         log.info("=====> register instance {}", instance.toUrl());
         REGISTRY.add(service, instance);
         instance.setStatus(true);
-        renew(service, instance);
-        return instance;
-    }
-
-    private static void renew(String service, InstanceMeta instance) {
-        TIMESTAMPS.put(service + "@" + instance.toUrl(),System.currentTimeMillis());
+        renew(instance,service);
         VERSIONS.put(service,VERSION.incrementAndGet());
+        return instance;
     }
 
     @Override
@@ -58,12 +56,30 @@ public class DuRegistryService implements RegistryService{
         log.info("=====> unregister instance {}", instance.toUrl());
         REGISTRY.remove(service, instance);
         instance.setStatus(false);
-        renew(service, instance);
+        renew(instance, service);
+        VERSIONS.put(service, VERSION.incrementAndGet());
         return instance;
     }
 
     @Override
     public List<InstanceMeta> getAllInstances(String service) {
         return REGISTRY.get(service);
+    }
+
+    public synchronized long renew(InstanceMeta instance,String... services) {
+        long now = System.currentTimeMillis();
+        for (String service : services) {
+            TIMESTAMPS.put(service+"@"+instance.toUrl(), now);
+        }
+        return now;
+    }
+
+    public Long version(String service) {
+        return VERSIONS.get(service);
+    }
+
+    public Map<String, Long> versions(String... services) {
+        return Arrays.stream(services)
+                .collect(Collectors.toMap(x->x, VERSIONS::get, (a, b)->b));
     }
 }

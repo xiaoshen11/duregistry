@@ -1,8 +1,9 @@
-package com.example.duregistry.service;
+package com.bruce.duregistry.service;
 
-import com.example.duregistry.model.InstanceMeta;
+import com.bruce.duregistry.model.InstanceMeta;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * interface for registry service.
@@ -18,6 +19,11 @@ public interface RegistryService {
 
     List<InstanceMeta> getAllInstances(String service);
 
-    // todo 添加一些高级功能
+    // 添加一些高级功能
+    long renew(InstanceMeta instance,String... service);
+
+    Long version(String service);
+
+    Map<String, Long> versions(String... services);
 
 }

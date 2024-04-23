@@ -1,4 +1,4 @@
-package com.example.duregistry;
+package com.bruce.duregistry;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

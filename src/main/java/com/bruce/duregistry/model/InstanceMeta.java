@@ -1,4 +1,4 @@
-package com.example.duregistry.model;
+package com.bruce.duregistry.model;
 
 import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
