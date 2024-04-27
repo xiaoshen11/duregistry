@@ -2,8 +2,10 @@ package com.bruce.duregistry;
 
 import com.alibaba.fastjson.JSON;
 import com.bruce.duregistry.cluster.Server;
+import com.bruce.duregistry.cluster.Snapshot;
 import com.bruce.duregistry.model.InstanceMeta;
 import com.bruce.duregistry.cluster.Cluster;
+import com.bruce.duregistry.service.DuRegistryService;
 import com.bruce.duregistry.service.RegistryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +100,12 @@ public class DuRegistryController {
         cluster.self().setLeader(true);
         log.info(" ===> leader: {}", cluster.self());
         return cluster.self();
+    }
+
+    @RequestMapping("/snapshot")
+    public Snapshot snapshot()
+    {
+        return DuRegistryService.snapshot();
     }
 
     public static void main(String[] args) {

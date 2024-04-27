@@ -22,10 +22,10 @@ public class DuRegistryConfig {
     }
 
 
-//    @Bean(initMethod = "start", destroyMethod = "stop")
-//    public HealthChecker healthChecker(@Autowired RegistryService registryService) {
-//        return new DuHealthChecker(registryService);
-//    }
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public HealthChecker healthChecker(@Autowired RegistryService registryService) {
+        return new DuHealthChecker(registryService);
+    }
 
     @Bean(initMethod = "init")
     public Cluster cluster(@Autowired DuRegistryConfigProperties registryConfigProperties) {
