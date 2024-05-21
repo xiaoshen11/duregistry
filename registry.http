@@ -1,5 +1,5 @@
 ### 获取所有服务实例
-GET http://localhost:8484/findAll?service=com.bruce.durpc.UserService
+GET http://localhost:8484/findAll?service=app1_public_dev_com.bruce.durpc.demo.api.UserService
 
 ### 注册实例
 POST http://localhost:8484/reg?service=com.bruce.durpc.UserService
